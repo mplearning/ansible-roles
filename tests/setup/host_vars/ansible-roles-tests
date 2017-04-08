@@ -1,0 +1,31 @@
+ansible_host: 192.168.56.2
+ansible_port: 22
+ansible_user: vagrant
+ansible_ssh_pass: vagrant
+ansible_become_pass: vagrant
+ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+ansible_ssh_private_key_file: "{{ lookup('env', 'HOME') }}/.ssh/id_rsa"
+
+user: '{{ ansible_user }}'
+
+ssh_authorized_keys:
+  - "{{ lookup('env', 'HOME') }}/.ssh/id_rsa.pub"
+ssh_port: 22
+
+locale: fr_CH.UTF-8
+timezone: Etc/UTC
+
+system_tools:
+  - openssh-server # to update it
+  - rsync
+  - unzip
+  - tar
+
+kernel_packages: []
+
+python_packages:
+  - python-dev
+python_versions:
+  - 2.7
+
+register_ssh_host: yes

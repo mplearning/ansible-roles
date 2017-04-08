@@ -1,0 +1,41 @@
+########################################################################################################################
+# Ansible Roles Test - Setup PlayBook                                                                                  #
+########################################################################################################################
+---
+
+- hosts:
+    - localhost
+  roles:
+    - register-ssh-hosts
+    - vagrant
+  vars:
+    vagrant_role_action: setup
+
+- hosts:
+    - ansible-roles-tests
+  roles:
+    - bootstrap
+    - miscellaneous
+    - ansible
+    - docker
+  tasks:
+    - block:
+        - name: Generate RSA key
+          command: >
+            ssh-keygen -t rsa -f {{ ansible_user_dir }}/.ssh/id_rsa -q
+          args:
+            creates: '{{ ansible_user_dir }}/.ssh/id_rsa'
+
+        - name: Copy Ansible Roles
+          synchronize:
+            src=../../ dest={{ ansible_user_dir }}/ansible-roles/ archive=yes delete=yes
+
+        - name: Execute Test PlayBook
+          command:
+            ansible-playbook -i test test.yml
+          args:
+            chdir: '{{ ansible_user_dir }}/ansible-roles/tests'
+          register: test_results
+
+        - debug: var=test_results
+      tags: tests

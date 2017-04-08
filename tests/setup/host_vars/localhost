@@ -1,0 +1,11 @@
+ansible_connection: local
+
+ssh_authorized_keys: []
+
+vagrant_machines:
+  ansible-roles-tests:
+    cpus: 4
+    memory: 2048
+    host_public: 192.168.56.2
+    name: ubuntu/trusty64
+    provider: virtualbox

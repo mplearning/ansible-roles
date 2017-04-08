@@ -1,0 +1,23 @@
+########################################################################################################################
+# Ansible Roles Test - Test PlayBook                                                                                   #
+########################################################################################################################
+---
+
+- hosts:
+    - localhost
+  tasks:
+    - name: Start containers
+      docker_container: >
+        image={{ item }} name={{ item }} network_mode=host privileged=yes recreate={{ recreate_containers|bool }}
+        tty=yes state=started
+      register: containers
+      with_items:
+        - ubuntu-14.04
+
+    - add_host:
+        name={{ item }} groups=ansible-bootstrap
+      with_items:
+        - ubuntu-14.04
+
+- include: ../playbooks/ansible-bootstrap.yml
+- include: ../playbooks/common.yml

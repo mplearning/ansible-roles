@@ -1,0 +1,9 @@
+ansible_connection: docker
+
+user: admin
+ssh_port: 22
+
+locale: fr_CH.UTF-8
+timezone: Etc/UTC
+
+mounts: {}

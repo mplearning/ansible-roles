@@ -1,0 +1,3 @@
+ansible_connection: local
+
+recreate_containers: no
