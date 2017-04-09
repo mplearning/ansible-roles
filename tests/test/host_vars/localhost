@@ -1,3 +1,13 @@
 ansible_connection: local
 
-recreate_containers: no
+reset: no
+
+unit_test_roles:
+  - redis
+unit_test_systems:
+  - name: ubuntu1404
+    image: ubuntu:14.04
+  - name: ubuntu1604
+    image: ubuntu:16.04
+  - name: centos7
+    image: centos:7

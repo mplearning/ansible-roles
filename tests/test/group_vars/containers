@@ -1,0 +1,6 @@
+ansible_connection: docker
+
+ssh_port: 22
+
+locale: fr_CH.UTF-8
+timezone: Europe/Zurich

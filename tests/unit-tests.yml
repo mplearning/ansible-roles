@@ -1,0 +1,45 @@
+########################################################################################################################
+# Ansible Roles Test - Test PlayBook                                                                                   #
+########################################################################################################################
+---
+
+- hosts:
+    - localhost
+  tasks:
+    - name: Start roles tests containers
+      docker_container: >
+        name={{ item.0 }}-{{ item.1.name }} image={{ item.1.image }} recreate={{ reset|bool }}
+        entrypoint=/sbin/init network_mode=bridge privileged=yes tty=yes state=started
+      loop_control:
+        label: '{{ item.0 }}-{{ item.1.name }}'
+      when: limit is undefined or item.1.name in limit.split(',')
+      with_nested:
+        - '{{ unit_test_roles }}'
+        - '{{ unit_test_systems }}'
+
+    - name: Update inventory
+      add_host:
+        name={{ item.0 }}-{{ item.1.name }}
+        groups=ansible-bootstrap,containers,role-{{ item.0 }},system-{{ item.1.name }}
+      changed_when: no
+      loop_control:
+        label: '{{ item.0 }}-{{ item.1.name }}'
+      when: limit is undefined or item.1.name in limit.split(',')
+      with_nested:
+        - '{{ unit_test_roles }}'
+        - '{{ unit_test_systems }}'
+  tags: always
+
+- include: ../playbooks/ansible-bootstrap.yml
+# - include: ../playbooks/common.yml
+
+- hosts:
+    - role-redis
+  roles:
+    - miscellaneous
+    - redis
+  vars:
+    redis_password: 2D3Qvic2gxTbZNEp
+    system_administration_tools: []
+    system_tools: []
+    yum_epel_repository: no  # let redis roles or dependencies install EPEL
